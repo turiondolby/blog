@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostShowController;
 use App\Http\Controllers\PostIndexController;
 
 /*
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('posts', PostIndexController::class);
+Route::get('posts/{post:slug}', PostShowController::class);
