@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from "../store";
 
 import Home from '../pages/Home.vue'
 import Post from '../pages/Post.vue'
@@ -13,13 +14,20 @@ const routes = [
     },
     {
         path: '/admin/login',
-        name: 'login',
+        name: 'admin.login',
         component: Login
     },
     {
         path: '/admin/posts',
         name: 'admin.posts',
-        component: Posts
+        component: Posts,
+        beforeEnter: (to, from, next) => {
+            if (! store.getters.authenticated) {
+                return next({ name: 'admin.login' });
+            }
+
+            return next()
+        }
     },
     {
         path: '/posts/:slug',
