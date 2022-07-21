@@ -9,6 +9,6 @@ class PostIndexController extends Controller
 {
     public function __invoke()
     {
-        return PostResource::collection(Post::whereNotNull('published_at')->get());
+        return PostResource::collection(Post::latest()->whereNotNull('published_at')->get());
     }
 }
