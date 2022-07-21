@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-16">
-    <button type="button"
+    <button v-on:click="newPost" type="button"
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
       New post
     </button>
@@ -13,12 +13,13 @@
         </p>
         <div class="flex items-center space-x-6">
           <p class="text-base text-gray-500">
-          <span v-if="post.published_at" class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          <span v-if="post.published_at"
+                class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
             Published
           </span>
 
             <span v-else
-                class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
               Unpublished
             </span>
           </p>
@@ -38,15 +39,27 @@
 <script>
 import useAdminPosts from "../../api/useAdminPosts.js";
 import {onMounted} from "vue";
+import {useRouter} from "vue-router";
 
 export default {
   setup() {
-    const {posts, fetchPosts} = useAdminPosts()
+    const {posts, fetchPosts, createPost} = useAdminPosts()
+    const router = useRouter()
+
+    const newPost = async () => {
+      let post = await createPost()
+
+      await router.replace({
+        name: 'admin.posts.edit',
+        params: {slug: post.slug}
+      })
+    }
 
     onMounted(fetchPosts)
 
     return {
-      posts
+      posts,
+      newPost
     }
   }
 }
