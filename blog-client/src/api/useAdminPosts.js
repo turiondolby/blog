@@ -1,4 +1,4 @@
-import { ref } from "vue"
+import {ref} from "vue"
 import axios from "axios";
 
 export default function useAdminPosts() {
@@ -21,11 +21,16 @@ export default function useAdminPosts() {
         return response.data.data
     }
 
+    const patchPost = async (uuid) => {
+        await axios.patch(`/api/admin/posts/${uuid}`, post.value)
+    }
+
     return {
         posts,
         post,
         fetchPost,
         fetchPosts,
-        createPost
+        createPost,
+        patchPost
     }
 }
