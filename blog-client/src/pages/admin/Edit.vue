@@ -3,7 +3,9 @@
     <div class="absolute w-full left-0 top-0 p-6 flex justify-between items-center space-x-6">
       <div class="flex-grow flex item-center">
         <span class="mr-1">/</span>
-        <input v-model="post.slug" type="text" class="p-0 border-none focus:ring-0 w-full">
+        <input v-model="post.slug" v-on:click="$event.target.select()"
+               type="text" class="p-0 border-none focus:ring-0 w-full" spellcheck="false"
+        >
       </div>
 
       <div class="flex items-baseline space-x-6">
@@ -31,9 +33,10 @@
 
 <script>
 import useAdminPosts from "../../api/useAdminPosts.js";
-import {onMounted, watch} from "vue";
+import {onMounted, watch, watchEffect} from "vue";
 import _ from "lodash"
 import ResizeTextarea from "../../components/ResizeTextarea.vue";
+import slugify from "slugify";
 
 export default {
   components: {ResizeTextarea},
@@ -52,6 +55,22 @@ export default {
 
     onMounted(async () => {
       await fetchPost(props.uuid)
+
+      const replaceSlug = () => {
+        const slug = post.value.slug
+
+        if (slug.charAt(slug.length - 1) === ' ') {
+          return
+        }
+
+        post.value.slug = slug
+            ? slugify(slug, {strict: true})
+            : post.value.uuid
+      }
+
+      watchEffect(() => {
+        replaceSlug()
+      })
 
       watch(() => _.cloneDeep(post), _.debounce(() => {
         updatePost()
