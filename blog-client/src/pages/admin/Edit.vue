@@ -12,8 +12,11 @@
         <div>
           <span class="text-sm text-gray-500">Autosaved</span>
         </div>
-        <button class="text-sm font-medium">
-          Published
+        <button
+            v-on:click="post.published_at ? post.published_at = null : post.published_at = (new Date()).toISOString()"
+            v-bind:class="{'text-pink-500': post.published_at}"
+            class="text-sm font-medium">
+          {{ !post.published_at ? 'Publish' : 'Unpublish' }}
         </button>
         <router-link :to="{ name: 'post', params: { slug: post.slug } }" class="text-sm font-medium text-gray-800">
           Preview
