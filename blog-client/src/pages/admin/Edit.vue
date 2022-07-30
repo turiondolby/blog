@@ -32,7 +32,7 @@
       </ResizeTextarea>
     </div>
 
-    <Editor v-model="post.body"/>
+    <Editor v-model:modelValue="post.body" v-model:teaserValue="post.teaser"/>
 
   </div>
 </template>
