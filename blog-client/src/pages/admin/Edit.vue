@@ -1,5 +1,5 @@
 <template>
-  <div v-if="post.title">
+  <div>
     <div class="absolute w-full left-0 top-0 p-6 flex justify-between items-center space-x-6">
       <div class="flex-grow flex item-center">
         <span class="mr-1">/</span>
@@ -18,7 +18,7 @@
             class="text-sm font-medium">
           {{ !post.published_at ? 'Publish' : 'Unpublish' }}
         </button>
-        <router-link :to="{ name: 'post', params: { slug: post.slug } }" class="text-sm font-medium text-gray-800">
+        <router-link v-if="post.title" :to="{ name: 'post', params: { slug: post.slug } }" class="text-sm font-medium text-gray-800">
           Preview
         </router-link>
       </div>
@@ -31,6 +31,9 @@
         </template>
       </ResizeTextarea>
     </div>
+
+    <Editor v-model="post.body"/>
+
   </div>
 </template>
 
@@ -39,10 +42,11 @@ import useAdminPosts from "../../api/useAdminPosts.js";
 import {onMounted, watch, watchEffect} from "vue";
 import _ from "lodash"
 import ResizeTextarea from "../../components/ResizeTextarea.vue";
+import Editor from "../../components/Editor.vue";
 import slugify from "slugify";
 
 export default {
-  components: {ResizeTextarea},
+  components: {ResizeTextarea, Editor},
   props: {
     uuid: {
       required: true,
