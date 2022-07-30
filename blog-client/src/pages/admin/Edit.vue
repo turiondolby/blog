@@ -10,7 +10,7 @@
 
       <div class="flex items-baseline space-x-6">
         <div>
-          <span class="text-sm text-gray-500">Autosaved</span>
+          <span class="text-sm text-gray-500">{{ lastSaved.fromNow() }}</span>
         </div>
         <button
             v-on:click="post.published_at ? post.published_at = null : post.published_at = (new Date()).toISOString()"
@@ -39,11 +39,14 @@
 
 <script>
 import useAdminPosts from "../../api/useAdminPosts.js";
-import {onMounted, watch, watchEffect} from "vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 import _ from "lodash"
 import ResizeTextarea from "../../components/ResizeTextarea.vue";
 import Editor from "../../components/Editor.vue";
 import slugify from "slugify";
+import dayjs from "dayjs"
+import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
 
 export default {
   components: {ResizeTextarea, Editor},
@@ -56,8 +59,11 @@ export default {
   setup(props) {
     const {post, fetchPost, patchPost} = useAdminPosts()
 
+    const lastSaved = ref(null)
+
     const updatePost = async () => {
       await patchPost(props.uuid)
+      lastSaved.value = dayjs()
     }
 
     onMounted(async () => {
@@ -85,7 +91,8 @@ export default {
     })
 
     return {
-      post
+      post,
+      lastSaved
     }
   },
 }
